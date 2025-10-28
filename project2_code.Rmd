@@ -1,0 +1,11 @@
+---
+title: "Biostat 721 Project 2"
+author: "Christina Kim"
+output: word_document
+date: "2025-11-06"
+---
+
+```{r}
+
+```
+
