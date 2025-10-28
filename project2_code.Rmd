@@ -8,9 +8,11 @@ date: "2025-11-06"
 ```{r setup}
 knitr::opts_chunk$set(include = FALSE)
 library(dplyr)
+library(tidyr)
 library(stringr)
 library(readr)
 library(lubridate)
+library(ggplot2)
 ```
 
 ```{r upload data}
@@ -54,12 +56,106 @@ clean_func = function(data) {
 ```
 
 ```{r clean data}
-clean_func(data_2019)
-clean_func(data_2019)
-clean_func(data_2020)
+clean_2018 = clean_func(data_2018)
+clean_2019 = clean_func(data_2019)
+clean_2020 = clean_func(data_2020)
+```
+
+```{r combine data}
+all_data = bind_rows(
+  clean_2018 %>% mutate(
+    year = 2018,
+    month = month(Date, label = TRUE)),
+  clean_2019 %>% mutate(
+    year = 2019,
+    month = month(Date, label = TRUE)),
+  clean_2020 %>% mutate(
+    year = 2020,
+    month = month(Date, label = TRUE))
+)
 ```
 
 ```{r}
+# create month variable
+monthly_avg <- all_data %>%
+  group_by(month) %>%
+  summarise(
+    co_mean = mean(co, na.rm = TRUE),
+    o3_mean = mean(o3, na.rm = TRUE),
+  ) %>%
+  pivot_longer(cols = c(co_mean, o3_mean), names_to = "pollutant", values_to = "value")
+monthly_avg
+```
+
+```{r}
+ggplot(monthly_avg, aes(x = as.numeric(month), y = value, color = pollutant)) +
+  geom_point(alpha = 0.7, size = 2) +
+  geom_smooth(method = "loess", se = TRUE, span = 0.8, linewidth = 1) +
+  scale_color_manual(values = c("co" = "#1b9e77", "o3" = "#d95f02"),
+                     labels = c("CO", "O₃")) +
+  scale_x_continuous(breaks = 1:12,
+                     labels = month.abb) +
+  labs(
+    title = "Monthly Average CO and O₃ Concentrations (2018–2020)",
+    x = "Month",
+    y = "Concentration (ppm or ppb)",
+    color = "Pollutant"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "top")
+```
+
+
+
+```{r}
+# create month variable
+monthly_avg1 <- all_data %>%
+  group_by(month) %>%
+  summarise(
+    co_mean = mean(co, na.rm = TRUE),
+    co_se   = sd(co, na.rm = TRUE) / sqrt(sum(!is.na(co))),
+    o3_mean = mean(o3, na.rm = TRUE),
+    o3_se   = sd(o3, na.rm = TRUE) / sqrt(sum(!is.na(o3)))
+  ) %>%
+  # gather long for ggplot
+  tidyr::pivot_longer(cols = c(co_mean, o3_mean, co_se, o3_se),
+                      names_to = c("pollutant", ".value"),
+                      names_pattern = "(.*)_(mean|se)")
 
 ```
+
+```{r}
+ggplot(monthly_avg1, aes(x = month, y = mean, color = pollutant, group = pollutant)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  geom_errorbar(aes(ymin = mean - 1.96 * se, ymax = mean + 1.96 * se), width = 0.2) +
+  scale_color_manual(values = c("co" = "#1b9e77", "o3" = "#d95f02"),
+                     labels = c("CO", "O3")) +
+  labs(
+    title = "Monthly Average CO and O3 Concentrations (2018–2020)",
+    x = "Month",
+    y = "Concentration (ppm or ppb)",
+    color = "Pollutant"
+  ) +
+  theme_minimal(base_size = 13)
+```
+
+```{r}
+pm_monthly <- all_data %>%
+  group_by(year, month) %>%
+  summarise(pm25_mean = mean(pm25, na.rm = TRUE), .groups = "drop")
+
+ggplot(pm_monthly, aes(x = month, y = pm25_mean, color = factor(year), group = year)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  scale_color_viridis_d(name = "Year") +
+  labs(
+    title = "Monthly Average PM2.5 Concentration by Year",
+    x = "Month",
+    y = expression("PM"[2.5]~"Concentration (µg/m³)")
+  ) +
+  theme_minimal(base_size = 13)
+
+```
+
 
