@@ -6,19 +6,60 @@ date: "2025-11-06"
 ---
 
 ```{r setup}
-library(tidyverse)
+knitr::opts_chunk$set(include = FALSE)
+library(dplyr)
+library(stringr)
 library(readr)
+library(lubridate)
 ```
 
 ```{r upload data}
 data_2018 = read.csv("project 2 data/AQ_2018.csv")
 data_2019 = read.csv("project 2 data/AQ_2019.csv")
 data_2020 = read.csv("project 2 data/AQ_2020.csv")
-data_2018
 ```
 
 ```{r function}
-clean_func = func(data){ 
+clean_func = function(data) { 
+  data %>% 
+    # Rename pollutant concentration columns
+    rename(
+      co = "Daily.Max.8.hour.CO.Concentration",
+      pm25 = "Daily.Mean.PM2.5.Concentration",
+      o3 = "Daily.Max.8.hour.Ozone.Concentration"
+    ) %>%
+    # Format date variable
+    mutate(
+      Date = mdy(Date)      
+    ) %>%
+    # When pollutants are negative -> set them to 0
+    mutate(                
+      co = if_else(co < 0, 0, co),
+      pm25 = if_else(pm25 < 0, 0, pm25),
+      o3 = if_else(o3 < 0, 0, o3)
+    ) %>%
+    # Collapse to one row per day by taking the daily average
+     group_by(Date) %>%     
+    summarise(
+      co = mean(co, na.rm = TRUE),
+      pm25 = mean(pm25, na.rm = TRUE),
+      o3 = mean(o3, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    # Remove duplicates
+    distinct() %>%
+    # Select only important columns
+    select(c(Date,co, pm25, o3))     
   }
+```
+
+```{r clean data}
+clean_func(data_2019)
+clean_func(data_2019)
+clean_func(data_2020)
+```
+
+```{r}
+
 ```
 
