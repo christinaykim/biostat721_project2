@@ -5,7 +5,20 @@ output: word_document
 date: "2025-11-06"
 ---
 
-```{r}
+```{r setup}
+library(tidyverse)
+library(readr)
+```
 
+```{r upload data}
+data_2018 = read.csv("project 2 data/AQ_2018.csv")
+data_2019 = read.csv("project 2 data/AQ_2019.csv")
+data_2020 = read.csv("project 2 data/AQ_2020.csv")
+data_2018
+```
+
+```{r function}
+clean_func = func(data){ 
+  }
 ```
 
