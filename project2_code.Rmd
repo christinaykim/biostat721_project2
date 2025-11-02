@@ -112,8 +112,7 @@ pm_monthly <- all_data %>%
   group_by(year, month) %>%
   summarise(pm25_mean = mean(pm25, na.rm = TRUE), .groups = "drop")
 
-ggplot(pm_monthly, aes(x = month, y = pm25_mean, color = factor(year), group = year)) +
-  geom_line(linewidth = 1) +
+ggplot(pm_monthly, aes(x = month, y = pm25_mean, color = factor(year), group = year)) + geom_line(linewidth = 0.5) +
   geom_point(size = 2) +
   scale_color_viridis_d(name = "Year") +
   labs(
