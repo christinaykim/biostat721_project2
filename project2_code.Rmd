@@ -81,38 +81,6 @@ monthly_avg <- all_data %>%
   group_by(month) %>%
   summarise(
     co_mean = mean(co, na.rm = TRUE),
-    o3_mean = mean(o3, na.rm = TRUE),
-  ) %>%
-  pivot_longer(cols = c(co_mean, o3_mean), names_to = "pollutant", values_to = "value")
-monthly_avg
-```
-
-```{r}
-ggplot(monthly_avg, aes(x = as.numeric(month), y = value, color = pollutant)) +
-  geom_point(alpha = 0.7, size = 2) +
-  geom_smooth(method = "loess", se = TRUE, span = 0.8, linewidth = 1) +
-  scale_color_manual(values = c("co" = "#1b9e77", "o3" = "#d95f02"),
-                     labels = c("CO", "O₃")) +
-  scale_x_continuous(breaks = 1:12,
-                     labels = month.abb) +
-  labs(
-    title = "Monthly Average CO and O₃ Concentrations (2018–2020)",
-    x = "Month",
-    y = "Concentration (ppm or ppb)",
-    color = "Pollutant"
-  ) +
-  theme_minimal(base_size = 13) +
-  theme(legend.position = "top")
-```
-
-
-
-```{r}
-# create month variable
-monthly_avg1 <- all_data %>%
-  group_by(month) %>%
-  summarise(
-    co_mean = mean(co, na.rm = TRUE),
     co_se   = sd(co, na.rm = TRUE) / sqrt(sum(!is.na(co))),
     o3_mean = mean(o3, na.rm = TRUE),
     o3_se   = sd(o3, na.rm = TRUE) / sqrt(sum(!is.na(o3)))
@@ -121,7 +89,6 @@ monthly_avg1 <- all_data %>%
   tidyr::pivot_longer(cols = c(co_mean, o3_mean, co_se, o3_se),
                       names_to = c("pollutant", ".value"),
                       names_pattern = "(.*)_(mean|se)")
-
 ```
 
 ```{r}
