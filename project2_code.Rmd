@@ -5,8 +5,7 @@ output: word_document
 date: "2025-11-17"
 ---
 
-```{r setup}
-knitr::opts_chunk$set(include = FALSE)
+```{r setup, echo=FALSE, warning = FALSE, message = FALSE}
 library(dplyr)
 library(tidyr)
 library(stringr)
@@ -15,13 +14,13 @@ library(lubridate)
 library(ggplot2)
 ```
 
-```{r upload data}
+```{r upload data, echo=FALSE}
 data_2018 = read.csv("project 2 data/AQ_2018.csv")
 data_2019 = read.csv("project 2 data/AQ_2019.csv")
 data_2020 = read.csv("project 2 data/AQ_2020.csv")
 ```
 
-```{r function}
+```{r function, echo=FALSE}
 clean_func = function(data) { 
   data %>% 
     # Rename pollutant concentration columns
@@ -55,13 +54,13 @@ clean_func = function(data) {
   }
 ```
 
-```{r clean data}
+```{r clean data, echo=FALSE}
 clean_2018 = clean_func(data_2018)
 clean_2019 = clean_func(data_2019)
 clean_2020 = clean_func(data_2020)
 ```
 
-```{r combine data}
+```{r combine data, echo=FALSE}
 all_data = bind_rows(
   clean_2018 %>% mutate(
     year = 2018,
@@ -75,7 +74,7 @@ all_data = bind_rows(
 )
 ```
 
-```{r}
+```{r monthly avg, echo=FALSE}
 # monthly avg and standard error of co and o3 across all three years
 monthly_avg <- all_data %>%
   group_by(month) %>%
@@ -92,7 +91,8 @@ monthly_avg <- all_data %>%
 
 ```
 
-```{r}
+# Plot 1
+```{r plot 1, echo=FALSE}
 ggplot(monthly_avg, aes(x = month, y = mean, color = pollutant, group = pollutant)) +
   geom_line(linewidth = 1) +
   geom_point(size = 2) +
@@ -108,15 +108,15 @@ ggplot(monthly_avg, aes(x = month, y = mean, color = pollutant, group = pollutan
   theme_minimal(base_size = 13)
 ```
 
-```{r}
+```{r pm2.5 monthly avg, echo=FALSE}
 #PM2.5 monthly average for each of the three years
 pm_monthly <- all_data %>%
   group_by(year, month) %>%
   summarise(pm25_mean = mean(pm25, na.rm = TRUE), .groups = "drop")
 ```
 
-
-```{r}
+# Plot 2
+```{r echo=FALSE}
 ggplot(pm_monthly, aes(x = month, y = pm25_mean, color = factor(year), group = year)) + geom_line(linewidth = 0.5) +
   geom_point(size = 2) +
   scale_color_viridis_d(name = "Year") +
@@ -129,7 +129,7 @@ ggplot(pm_monthly, aes(x = month, y = pm25_mean, color = factor(year), group = y
 
 ```
 
-```{r}
+```{r plot 2, echo=FALSE}
 ggplot(pm_monthly, aes(x = month, y = pm25_mean, group = 1, color = factor(year))) +
   geom_line(linewidth = 0.5) +
   geom_point(size = 1.5) +
