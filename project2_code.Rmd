@@ -2,7 +2,7 @@
 title: "Biostat 721 Project 2"
 author: "Christina Kim"
 output: word_document
-date: "2025-11-06"
+date: "2025-11-17"
 ---
 
 ```{r setup}
@@ -76,7 +76,7 @@ all_data = bind_rows(
 ```
 
 ```{r}
-# create month variable
+# monthly avg and standard error of co and o3 across all three years
 monthly_avg <- all_data %>%
   group_by(month) %>%
   summarise(
@@ -89,6 +89,7 @@ monthly_avg <- all_data %>%
   tidyr::pivot_longer(cols = c(co_mean, o3_mean, co_se, o3_se),
                       names_to = c("pollutant", ".value"),
                       names_pattern = "(.*)_(mean|se)")
+
 ```
 
 ```{r}
@@ -97,17 +98,18 @@ ggplot(monthly_avg, aes(x = month, y = mean, color = pollutant, group = pollutan
   geom_point(size = 2) +
   geom_errorbar(aes(ymin = mean - 1.96 * se, ymax = mean + 1.96 * se), width = 0.2) +
   scale_color_manual(values = c("co" = "#1b9e77", "o3" = "#d95f02"),
-                     labels = c("CO", "O3")) +
+                     labels = c("CO", expression("O"[3]*""))) +
   labs(
-    title = "Monthly Average CO and O3 Concentrations (2018–2020)",
+    title = expression("Monthly Average CO and O"[3]*" Concentrations (2018–2020)"),
     x = "Month",
-    y = "Concentration (ppm or ppb)",
-    color = "Pollutant"
+    y = "Concentration (ppm)",
+    color = "Pollutant" 
   ) +
   theme_minimal(base_size = 13)
 ```
 
 ```{r}
+#PM2.5 monthly average for each of the three years
 pm_monthly <- all_data %>%
   group_by(year, month) %>%
   summarise(pm25_mean = mean(pm25, na.rm = TRUE), .groups = "drop")
