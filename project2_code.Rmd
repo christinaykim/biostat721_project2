@@ -88,7 +88,6 @@ monthly_avg <- all_data %>%
   tidyr::pivot_longer(cols = c(co_mean, o3_mean, co_se, o3_se),
                       names_to = c("pollutant", ".value"),
                       names_pattern = "(.*)_(mean|se)")
-
 ```
 
 # Plot 1
@@ -116,19 +115,6 @@ pm_monthly <- all_data %>%
 ```
 
 # Plot 2
-```{r echo=FALSE}
-ggplot(pm_monthly, aes(x = month, y = pm25_mean, color = factor(year), group = year)) + geom_line(linewidth = 0.5) +
-  geom_point(size = 2) +
-  scale_color_viridis_d(name = "Year") +
-  labs(
-    title = expression("Monthly Average PM"[2.5]*" Concentration by Year"),
-    x = "Month",
-    y = expression("PM"[2.5]~"Concentration (µg/m³)")
-  ) +
-  theme_minimal(base_size = 13)
-
-```
-
 ```{r plot 2, echo=FALSE}
 ggplot(pm_monthly, aes(x = month, y = pm25_mean, group = 1, color = factor(year))) +
   geom_line(linewidth = 0.5) +
