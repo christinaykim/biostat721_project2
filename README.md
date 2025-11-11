@@ -18,7 +18,7 @@ The function performs the following steps:
 - Removes duplicate rows  
 - Replaces negative pollutant values with zero  
 
-The function was applied to three yearly datasets (`AQ_2018`, `AQ_2019`, `AQ_2020`), producing cleaned data suitable for analysis and visualization.
+The function was applied to three yearly datasets (`AQ_2018`, `AQ_2019`, `AQ_2020`) located in the project 2 data folder, producing cleaned data suitable for analysis and visualization.
 
 ---
 
