@@ -6,6 +6,7 @@
 ## Project Overview  
 This project investigates air pollution trends in **Durham County, NC (Jan 2018 – Apr 2020)** to support research on the relationship between **environmental exposure and sickle cell disease (SCD)**.  
 Using daily measurements of **CO**, **PM2.5**, and **O₃** concentrations from the **EPA monitor at RDU Airport**, the analysis focuses on cleaning, summarizing, and visualizing temporal air quality patterns.
+All of code for the project is located in the project2_code.RMD file
 
 ---
 
@@ -24,10 +25,8 @@ The function was applied to three yearly datasets (`AQ_2018`, `AQ_2019`, `AQ_202
 
 ## Visualizations  
 Two main plots were created to summarize and explore pollutant trends:
-
 1. **Monthly Average CO and O₃ (2018–2020)**  
    Displays mean monthly concentrations with **95% confidence intervals**, using different colors for each pollutant.
-
 2. **Monthly Average PM2.5 by Year**  
    Shows average monthly PM2.5 concentrations **colored and faceted by year**, highlighting seasonal and yearly variability.
 
