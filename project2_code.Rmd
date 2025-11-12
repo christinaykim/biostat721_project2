@@ -76,7 +76,7 @@ all_data = bind_rows(
 
 ```{r monthly avg, echo=FALSE}
 # monthly avg and standard error of co and o3 across all three years
-monthly_avg <- all_data %>%
+monthly_avg = all_data %>%
   group_by(month) %>%
   summarise(
     co_mean = mean(co, na.rm = TRUE),
@@ -109,7 +109,7 @@ ggplot(monthly_avg, aes(x = month, y = mean, color = pollutant, group = pollutan
 
 ```{r pm2.5 monthly avg, echo=FALSE}
 #PM2.5 monthly average for each of the three years
-pm_monthly <- all_data %>%
+pm_monthly = all_data %>%
   group_by(year, month) %>%
   summarise(pm25_mean = mean(pm25, na.rm = TRUE), .groups = "drop")
 ```
